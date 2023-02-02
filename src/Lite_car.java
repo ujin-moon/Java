@@ -8,6 +8,7 @@ public class Lite_car extends Car implements Comparable {
     public Types Type;
     public int Doors_value;
     public Type_pers Type_per;
+    public Types_sort Type_sort;
     public String Color;
 
 
@@ -58,8 +59,13 @@ public class Lite_car extends Car implements Comparable {
 
     @Override
     public int compareTo(Object o) {
+        Scanner console = new Scanner(System.in);
+        System.out.print("Выберите тип по какому атрибуту сортировать (1-Год, 2-Скорость, 3-Количество дверей): ");
+        String choice = console.nextLine();
         Lite_car temp = (Lite_car) o;
-        return Integer.compare(this.Max_speed, temp.Max_speed);
+        if (Objects.equals(choice, "1")) return Integer.compare(this.Year, temp.Year);
+        else if (Objects.equals(choice, "2")) return Integer.compare(this.Max_speed, temp.Max_speed);
+        else return Integer.compare(this.Doors_value, temp.Doors_value);
     }
 
 
@@ -73,6 +79,17 @@ public class Lite_car extends Car implements Comparable {
     enum Type_pers {
         Автомат,
         Ручная
+    }
+
+    enum Types_sort {
+        Марка,
+        Модель,
+        Год,
+        Скорость,
+        Корпус,
+        Двери,
+        Передачи,
+        Цвет
     }
 
     public static List Sort(int field, Main.sortDirections dir) {
