@@ -35,38 +35,75 @@ public class Main {
         }
         System.out.println("\n\n");
 
-        // Вывод отсортированных легковых
-        ArrayList<Lite_car> temp_lite = new ArrayList<>();
-        for (Car f : items) {
-            try { temp_lite.add((Lite_car) f); }
-            catch (ClassCastException ignored) {  }
-        }
-        for (Lite_car c : SortLite_cars(temp_lite))
-            System.out.println(c.StringView());
+        Scanner console1 = new Scanner(System.in);
+        System.out.print("\nХотите отсортировать автомобили? (1-Да, 2-Нет): ");
+        while (console.nextInt() == 1) {
+            console = new Scanner(System.in);
+            System.out.print("Выберите тип сортировки (1-По убыванию, 2-По возрастанию): ");
+            String choice1 = console.nextLine();
+            if (Objects.equals(choice1, "1")) {
+                // Вывод отсортированных легковых
+                ArrayList<Lite_car> temp_lite = new ArrayList<>();
+                for (Car f : items) {
+                    try { temp_lite.add((Lite_car) f); }
+                    catch (ClassCastException ignored) {  }
+                }
+                for (Lite_car c : SortLite_cars_Down(temp_lite))
+                    System.out.println(c.StringView());
 
-        // Вывод отсортированных грузовых
-        ArrayList<Heavy_car> temp_heavy = new ArrayList<>();
-        for (Car f : items) {
-            try { temp_heavy.add((Heavy_car) f); }
-            catch (ClassCastException ignored) {  }
-        }
-        for (Heavy_car t : SortHeavy_cars(temp_heavy))
-            System.out.println(t.StringView());
+                // Вывод отсортированных грузовых
+                ArrayList<Heavy_car> temp_heavy = new ArrayList<>();
+                for (Car f : items) {
+                    try { temp_heavy.add((Heavy_car) f); }
+                    catch (ClassCastException ignored) {  }
+                }
+                for (Heavy_car t : SortHeavy_cars_Down(temp_heavy))
+                    System.out.println(t.StringView());
 
-        // Вывод отсортированных автобусов
-        ArrayList<Bus> temp_bus = new ArrayList<>();
-        for (Car f : items) {
-            try { temp_bus.add((Bus) f); }
-            catch (ClassCastException ignored) {  }
+                // Вывод отсортированных автобусов
+                ArrayList<Bus> temp_bus = new ArrayList<>();
+                for (Car f : items) {
+                    try { temp_bus.add((Bus) f); }
+                    catch (ClassCastException ignored) {  }
+                }
+                for (Bus l : SortBus_Down(temp_bus))
+                    System.out.println(l.StringView());
+            }
+            if(Objects.equals(choice1, "2"))
+            {
+                // Вывод отсортированных легковых
+                ArrayList<Lite_car> temp_lite = new ArrayList<>();
+                for (Car f : items) {
+                    try { temp_lite.add((Lite_car) f); }
+                    catch (ClassCastException ignored) {  }
+                }
+                for (Lite_car c : SortLite_cars_Up(temp_lite))
+                    System.out.println(c.StringView());
+
+                // Вывод отсортированных грузовых
+                ArrayList<Heavy_car> temp_heavy = new ArrayList<>();
+                for (Car f : items) {
+                    try { temp_heavy.add((Heavy_car) f); }
+                    catch (ClassCastException ignored) {  }
+                }
+                for (Heavy_car t : SortHeavy_cars_Up(temp_heavy))
+                    System.out.println(t.StringView());
+
+                // Вывод отсортированных автобусов
+                ArrayList<Bus> temp_bus = new ArrayList<>();
+                for (Car f : items) {
+                    try { temp_bus.add((Bus) f); }
+                    catch (ClassCastException ignored) {  }
+                }
+                for (Bus l : SortBus_Up(temp_bus))
+                    System.out.println(l.StringView());
+            }
         }
-        for (Bus l : SortBus(temp_bus))
-            System.out.println(l.StringView());
 
     }
 
-
-    // Сортировка легковых машин
-    private static ArrayList<Lite_car> SortLite_cars(ArrayList<Lite_car> array) {
+    // Сортировка легковых машин по возрастанию
+    private static ArrayList<Lite_car> SortLite_cars_Up(ArrayList<Lite_car> array) {
         boolean isSorted = false;
         Lite_car buf;
         while (!isSorted) {
@@ -85,8 +122,8 @@ public class Main {
     }
 
 
-    // Сортировка грузовых автомобилей
-    private static ArrayList<Heavy_car> SortHeavy_cars(ArrayList<Heavy_car> array) {
+    // Сортировка грузовых автомобилей по возрастанию
+    private static ArrayList<Heavy_car> SortHeavy_cars_Up(ArrayList<Heavy_car> array) {
         boolean isSorted = false;
         Heavy_car buf;
         while (!isSorted) {
@@ -104,15 +141,72 @@ public class Main {
         return array;
     }
 
-
-    // Сортировка автобусов
-    private static ArrayList<Bus> SortBus(ArrayList<Bus> array) {
+    // Сортировка автобусов по возрастанию
+    private static ArrayList<Bus> SortBus_Up(ArrayList<Bus> array) {
         boolean isSorted = false;
         Bus buf;
         while (!isSorted) {
             isSorted = true;
             for (int i = 0; i < array.size() - 1; i++) {
                 if (array.get(i).compareTo(array.get(i + 1)) > 0){
+                    isSorted = false;
+
+                    buf = array.get(i);
+                    array.set(i, array.get(i + 1));
+                    array.set(i + 1, buf);
+                }
+            }
+        }
+        return array;
+    }
+
+
+    // Сортировка автобусов по убыванию
+    private static ArrayList<Bus> SortBus_Down(ArrayList<Bus> array) {
+        boolean isSorted = false;
+        Bus buf;
+        while (!isSorted) {
+            isSorted = true;
+            for (int i = 0; i < array.size() - 1; i++) {
+                if (array.get(i).compareTo(array.get(i + 1)) < 0){
+                    isSorted = false;
+
+                    buf = array.get(i);
+                    array.set(i, array.get(i + 1));
+                    array.set(i + 1, buf);
+                }
+            }
+        }
+        return array;
+    }
+    // Сортировка легковых машин по убыванию
+    private static ArrayList<Lite_car> SortLite_cars_Down(ArrayList<Lite_car> array) {
+        boolean isSorted = false;
+        Lite_car buf;
+        while (!isSorted) {
+            isSorted = true;
+            for (int i = 0; i < array.size() - 1; i++) {
+                if (array.get(i).compareTo(array.get(i + 1)) < 0){
+                    isSorted = false;
+
+                    buf = array.get(i);
+                    array.set(i, array.get(i + 1));
+                    array.set(i + 1, buf);
+                }
+            }
+        }
+        return array;
+    }
+
+
+    // Сортировка грузовых автомобилей по убыванию
+    private static ArrayList<Heavy_car> SortHeavy_cars_Down(ArrayList<Heavy_car> array) {
+        boolean isSorted = false;
+        Heavy_car buf;
+        while (!isSorted) {
+            isSorted = true;
+            for (int i = 0; i < array.size() - 1; i++) {
+                if (array.get(i).compareTo(array.get(i + 1)) < 0){
                     isSorted = false;
 
                     buf = array.get(i);
