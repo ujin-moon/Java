@@ -1,220 +1,108 @@
 import java.util.*;
+import java.io.*;
 
-public class Main {
+class Main{
+    public static int[] _ArrayFirst;
+    public static ArrayList<Double> _ArraySecond = new ArrayList<>();
+    public static Scanner _Scanner = new Scanner(System.in);
+    public static Random _Random = new Random();
+    public static class _GenerateArray implements Runnable,_PrintInfo{
+        private int num;
+        public _GenerateArray(int n){
+            this.num = n;
+            Thread _GenerateArray = new Thread(this,"Дочерний поток " + num);
+            System.out.println("Дочерний поток " + num + " создан!");
+            num = num+1;
+            System.out.println("Дочерний поток " + num + " создан!");
+            num = num+1;
+            System.out.println("Дочерний поток " + num + " создан!");
+            _GenerateArray.start();
+        }
+        @Override
+        public void run()
+        {
+            _ArrayFirst = new int[_Random.nextInt(100,10000)];
+            for (int i = 0; i < _ArrayFirst.length; i++) {
+                _ArrayFirst[i] = _Random.nextInt(100,10000);
+            }
+        }
 
-    public static enum sortDirections {}
+        public void _PrintInfo() {
+            System.out.println("Случайный массив:");
+            for (int i = 0; i < _ArrayFirst.length; i++) {
+                System.out.println(i + "-ый элемент массива: " + _ArrayFirst[i] + "\n");
+            }
 
+        }
+    }
+    public static class _ArrayHandling implements Runnable,_PrintInfo{
+        private Thread _ArrayHandling;
+        public _ArrayHandling(int d) {
+            _ArrayHandling = new Thread(this, "Поток вычисления суммы элементов кратных 5, но не кратных 2");
+            _ArrayHandling.start();
+        }
+
+        @Override
+        public void run() {
+            int _Count = 0;
+            int Summa = 0;
+            for (int i = 0; i < _ArrayFirst.length; i++) {
+                if (_ArrayFirst[i] % 5 == 0 && _ArrayFirst[i] % 2 != 0)
+                {
+                    Summa += _ArrayFirst[i];
+                }
+            }
+            System.out.println("Сумма элементов кратных 5 и не кратных 3 = " + Summa + "\n");
+        }
+
+        public void _PrintInfo() {
+        }
+
+
+        public Thread get_ArrayHandling()  {return _ArrayHandling;}
+
+
+    }
+    public static class _InputTextFile{
+        int Summa = 0;
+        public boolean _TextFile() throws IOException {
+            try(FileWriter writer = new FileWriter("TextFile.txt", false)){
+                for (int i = 0; i < _ArrayFirst.length; i++) {
+                    Summa += _ArrayFirst[i];
+                }
+                writer.write("Сумма элементов кратных 5 и не кратных 3 = " + Summa + "\n");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            FileReader reader = new FileReader("TextFile.txt");
+            int c;
+            boolean f = false;
+            while((c=reader.read())!=-1){
+                f = true;
+            }
+            return f;
+        }
+
+    }
     public static void main(String[] args) {
-
-        ArrayList<Car> items = new ArrayList<>();
-
-        Scanner console = new Scanner(System.in);
-        System.out.print("\nДобавить машину? (1-Да, 2-Нет): ");
-
-        // Ввод данных
-        while (console.nextInt() == 1) {
-            console = new Scanner(System.in);
-            System.out.print("Выберите тип машины (1-Легковая, 2-Грузовик, 3-Автобус): ");
-            String choice = console.nextLine();
-            if (Objects.equals(choice, "1")) {
-                Lite_car lite = new Lite_car();
-                lite.InputValue();
-                items.add(lite);
-            }
-            else if (Objects.equals(choice, "2")) {
-                Heavy_car heavy = new Heavy_car();
-                heavy.InputValue();
-                items.add(heavy);
-            }
-            else {
-                Bus bus = new Bus();
-                bus.InputValue();
-                items.add(bus);
-            }
-            System.out.print("\nДобавить новую машину? (1-Да, 2-Нет): ");
+        System.out.println("Введите номер дочернего потока:");
+        int _Num = _Scanner.nextInt();
+        _GenerateArray generateArray = new _GenerateArray(_Num);
+        _ArrayHandling arrayHandling = new _ArrayHandling(1);
+        generateArray.run();
+        arrayHandling.run();
+        generateArray.run();
+        arrayHandling.run();
+        _InputTextFile inputTextFile = new _InputTextFile();
+        try {
+            inputTextFile._TextFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        System.out.println("\n\n");
 
-        Scanner console1 = new Scanner(System.in);
-        System.out.print("\nХотите отсортировать автомобили? (1-Да, 2-Нет): ");
-        while (console.nextInt() == 1) {
-            console = new Scanner(System.in);
-            System.out.print("Выберите тип сортировки (1-По убыванию, 2-По возрастанию): ");
-            String choice1 = console.nextLine();
-            if (Objects.equals(choice1, "1")) {
-                // Вывод отсортированных легковых
-                ArrayList<Lite_car> temp_lite = new ArrayList<>();
-                for (Car f : items) {
-                    try { temp_lite.add((Lite_car) f); }
-                    catch (ClassCastException ignored) {  }
-                }
-                for (Lite_car c : SortLite_cars_Down(temp_lite))
-                    System.out.println(c.StringView());
-
-                // Вывод отсортированных грузовых
-                ArrayList<Heavy_car> temp_heavy = new ArrayList<>();
-                for (Car f : items) {
-                    try { temp_heavy.add((Heavy_car) f); }
-                    catch (ClassCastException ignored) {  }
-                }
-                for (Heavy_car t : SortHeavy_cars_Down(temp_heavy))
-                    System.out.println(t.StringView());
-
-                // Вывод отсортированных автобусов
-                ArrayList<Bus> temp_bus = new ArrayList<>();
-                for (Car f : items) {
-                    try { temp_bus.add((Bus) f); }
-                    catch (ClassCastException ignored) {  }
-                }
-                for (Bus l : SortBus_Down(temp_bus))
-                    System.out.println(l.StringView());
-            }
-            if(Objects.equals(choice1, "2"))
-            {
-                // Вывод отсортированных легковых
-                ArrayList<Lite_car> temp_lite = new ArrayList<>();
-                for (Car f : items) {
-                    try { temp_lite.add((Lite_car) f); }
-                    catch (ClassCastException ignored) {  }
-                }
-                for (Lite_car c : SortLite_cars_Up(temp_lite))
-                    System.out.println(c.StringView());
-
-                // Вывод отсортированных грузовых
-                ArrayList<Heavy_car> temp_heavy = new ArrayList<>();
-                for (Car f : items) {
-                    try { temp_heavy.add((Heavy_car) f); }
-                    catch (ClassCastException ignored) {  }
-                }
-                for (Heavy_car t : SortHeavy_cars_Up(temp_heavy))
-                    System.out.println(t.StringView());
-
-                // Вывод отсортированных автобусов
-                ArrayList<Bus> temp_bus = new ArrayList<>();
-                for (Car f : items) {
-                    try { temp_bus.add((Bus) f); }
-                    catch (ClassCastException ignored) {  }
-                }
-                for (Bus l : SortBus_Up(temp_bus))
-                    System.out.println(l.StringView());
-            }
-        }
 
     }
-
-    // Сортировка легковых машин по возрастанию
-    private static ArrayList<Lite_car> SortLite_cars_Up(ArrayList<Lite_car> array) {
-        boolean isSorted = false;
-        Lite_car buf;
-        while (!isSorted) {
-            isSorted = true;
-            for (int i = 0; i < array.size() - 1; i++) {
-                if (array.get(i).compareTo(array.get(i + 1)) > 0){
-                    isSorted = false;
-
-                    buf = array.get(i);
-                    array.set(i, array.get(i + 1));
-                    array.set(i + 1, buf);
-                }
-            }
-        }
-        return array;
-    }
-
-
-    // Сортировка грузовых автомобилей по возрастанию
-    private static ArrayList<Heavy_car> SortHeavy_cars_Up(ArrayList<Heavy_car> array) {
-        boolean isSorted = false;
-        Heavy_car buf;
-        while (!isSorted) {
-            isSorted = true;
-            for (int i = 0; i < array.size() - 1; i++) {
-                if (array.get(i).compareTo(array.get(i + 1)) > 0){
-                    isSorted = false;
-
-                    buf = array.get(i);
-                    array.set(i, array.get(i + 1));
-                    array.set(i + 1, buf);
-                }
-            }
-        }
-        return array;
-    }
-
-    // Сортировка автобусов по возрастанию
-    private static ArrayList<Bus> SortBus_Up(ArrayList<Bus> array) {
-        boolean isSorted = false;
-        Bus buf;
-        while (!isSorted) {
-            isSorted = true;
-            for (int i = 0; i < array.size() - 1; i++) {
-                if (array.get(i).compareTo(array.get(i + 1)) > 0){
-                    isSorted = false;
-
-                    buf = array.get(i);
-                    array.set(i, array.get(i + 1));
-                    array.set(i + 1, buf);
-                }
-            }
-        }
-        return array;
-    }
-
-
-    // Сортировка автобусов по убыванию
-    private static ArrayList<Bus> SortBus_Down(ArrayList<Bus> array) {
-        boolean isSorted = false;
-        Bus buf;
-        while (!isSorted) {
-            isSorted = true;
-            for (int i = 0; i < array.size() - 1; i++) {
-                if (array.get(i).compareTo(array.get(i + 1)) < 0){
-                    isSorted = false;
-
-                    buf = array.get(i);
-                    array.set(i, array.get(i + 1));
-                    array.set(i + 1, buf);
-                }
-            }
-        }
-        return array;
-    }
-    // Сортировка легковых машин по убыванию
-    private static ArrayList<Lite_car> SortLite_cars_Down(ArrayList<Lite_car> array) {
-        boolean isSorted = false;
-        Lite_car buf;
-        while (!isSorted) {
-            isSorted = true;
-            for (int i = 0; i < array.size() - 1; i++) {
-                if (array.get(i).compareTo(array.get(i + 1)) < 0){
-                    isSorted = false;
-
-                    buf = array.get(i);
-                    array.set(i, array.get(i + 1));
-                    array.set(i + 1, buf);
-                }
-            }
-        }
-        return array;
-    }
-
-
-    // Сортировка грузовых автомобилей по убыванию
-    private static ArrayList<Heavy_car> SortHeavy_cars_Down(ArrayList<Heavy_car> array) {
-        boolean isSorted = false;
-        Heavy_car buf;
-        while (!isSorted) {
-            isSorted = true;
-            for (int i = 0; i < array.size() - 1; i++) {
-                if (array.get(i).compareTo(array.get(i + 1)) < 0){
-                    isSorted = false;
-
-                    buf = array.get(i);
-                    array.set(i, array.get(i + 1));
-                    array.set(i + 1, buf);
-                }
-            }
-        }
-        return array;
+    interface _PrintInfo{
+        public void _PrintInfo();
     }
 }
